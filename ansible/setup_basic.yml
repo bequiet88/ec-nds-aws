@@ -1,0 +1,43 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name:
+    user:
+      name: pretix
+      shell: /bin/bash
+  - name: add ssh pub key to pretix user
+    authorized_key:
+      user: pretix
+      state: present
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  - name: configure ssh
+    lineinfile:
+      line: "{{ item }}"
+      path: /etc/ssh/sshd_config
+      state: present
+    with_items:
+      - "PermitRootLogin no"
+      - "PasswordAuthentication no"
+    notify:
+    - restart ssh daemon
+  - name: change hostname
+    hostname:
+      name: "{{ inventory_hostname }}"
+  - name: update apt-cache
+    apt:
+      update_cache: yes
+      cache_valid_time: 36000
+  - name: install apt-packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - vim
+      - curl
+  handlers:
+  - name: restart ssh daemon
+    service:
+      name: ssh
+      state: restarted
+

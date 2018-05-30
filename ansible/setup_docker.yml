@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: download docker
+    get_url:
+      url: get.docker.com -o
+      dest: /tmp/docker.sh
+  - name: install docker
+    command: "bash /tmp/docker.sh"
+  - name: add user to docker group
+    user:
+      name: pretix
+      groups: docker
+      append: yes
+
