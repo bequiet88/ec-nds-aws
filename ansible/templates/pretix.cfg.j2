@@ -1,0 +1,37 @@
+[pretix]
+instance_name=Tickets EC Niedersachsen
+url=https://tickets.ec-niedersachsen.de
+currency=EUR
+; DO NOT change the following value, it has to be set to the location of the
+; directory *inside* the docker container
+datadir=/data
+
+[locale]
+default=de
+timezone=Europe/Berlin
+
+[database]
+; Replace mysql with postgresql_psycopg2 for PostgreSQL
+backend=postgresql_psycopg2
+name=postgres
+user={{ postgres_user }}
+password={{ postgres_pw }}
+; Replace with host IP address for PostgreSQL
+host=db
+
+[mail]
+; See config file documentation for more options
+from={{ mail_from }}
+host={{ mail_host }}
+user={{ mail_user }}
+password={{ mail_pass }}
+port=25
+tls=on
+ssl=off
+
+[redis]
+location=redis://redis:6379/0
+
+[celery]
+backend=redis://redis:6379/0
+broker=redis://redis:6379/0
