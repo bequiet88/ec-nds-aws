@@ -4,7 +4,7 @@
   tasks:
   - name: download docker
     get_url:
-      url: get.docker.com -o
+      url: get.docker.com
       dest: /tmp/docker.sh
   - name: install docker
     command: "bash /tmp/docker.sh"
@@ -13,4 +13,18 @@
       name: pretix
       groups: docker
       append: yes
-
+  - name: download docker compose
+    get_url:
+      url: "https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m)" 
+      dest: /usr/local/bin/docker-compose
+  - name: make docker-compose executable
+    file:
+      path: /usr/local/bin/docker-compose
+      mode: 0755
+  - name: copy docker compose file to remote
+    copy:
+      src: ./files/docker-compose.yml
+      dest: /home/pretix/docker-compose.yml
+      owner: pretix
+      group: pretix
+      mode: 0644 

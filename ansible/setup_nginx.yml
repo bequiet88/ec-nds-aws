@@ -1,0 +1,29 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: install nginx
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - nginx
+  - name: copy nginx config
+    copy:
+      src: ./files/nginx.conf
+      dest: /etc/nginx/sites-available/tickets.ec-niedersachsen.de
+  - name: set symlink
+    file:
+      src: /etc/nginx/sites-available/tickets.ec-niedersachsen.de
+      dest: /etc/nginx/sites-enabled/tickets.ec-niedersachsen.de
+      state: link
+  - name: remove default symlink
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+  - name: start and enable nginx
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+

@@ -1,0 +1,19 @@
+version: '2'
+services:
+  web:
+    image: pretix/standalone:stable
+    ports:
+      - "8345:80"
+    depends_on:
+      - db
+    volumes:
+      - ./etc/pretix:/etc/pretix
+      - /var/pretix-data:/data
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=234ml2r09flk
+    volumes:
+      - /var/postgres-data:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine

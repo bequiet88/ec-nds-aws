@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - include_vars: secrets.yml
+  - name: create folder for config
+    file:  
+      path: "{{ item }}"
+      state: directory
+      owner: 15371
+      group: 15371
+      mode: 0755
+    with_items:
+      - /home/pretix/etc/pretix
+      - /var/pretix-data
+  - name: create folder for config
+    file:
+      path: /var/postgres-data
+      state: directory
+      owner: pretix
+      group: pretix
+      mode: 0777
+  - name: template pretix config
+    template:
+      src: ./templates/pretix.cfg.j2
+      dest: /home/pretix/etc/pretix/pretix.cfg
+      owner: 15371
+      group: 15371
+      mode: 0644
+  - name: enable cron job for pretix maintenance
+    cron:
+      name: "pretix maintenance"
+      minute: "15,45"
+      job: "/usr/bin/docker exec web pretix cron"
+  - name: run docker compose
+    docker_service:
+      project_name: "pretix"
+      project_src: /home/pretix
+      state: present
+       
+
