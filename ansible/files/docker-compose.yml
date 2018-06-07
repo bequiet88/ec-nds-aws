@@ -1,7 +1,9 @@
 version: '2'
 services:
   web:
-    image: pretix/standalone:stable
+    #image: pretix/standalone:stable
+    build: ./pretix
+    limit_mem: 512m
     ports:
       - "8345:80"
     depends_on:
@@ -11,9 +13,11 @@ services:
       - /var/pretix-data:/data
   db:
     image: postgres:latest
+    limit_mem: 256m
     environment:
       - POSTGRES_PASSWORD=234ml2r09flk
     volumes:
       - /var/postgres-data:/var/lib/postgresql/data
   redis:
     image: redis:alpine
+    limit_mem: 256m

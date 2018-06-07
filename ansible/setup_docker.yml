@@ -4,7 +4,7 @@
   tasks:
   - name: download docker
     get_url:
-      url: get.docker.com
+      url: https://get.docker.com
       dest: /tmp/docker.sh
   - name: install docker
     command: "bash /tmp/docker.sh"
@@ -15,7 +15,7 @@
       append: yes
   - name: download docker compose
     get_url:
-      url: "https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m)" 
+      url: "https://github.com/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64" 
       dest: /usr/local/bin/docker-compose
   - name: make docker-compose executable
     file:

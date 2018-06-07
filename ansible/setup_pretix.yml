@@ -3,6 +3,9 @@
   become: true
   tasks:
   - include_vars: secrets.yml
+  - git:
+      repo: 'https://github.com/pretix/pretix.git'
+      dest: /home/pretix/pretix
   - name: create folder for config
     file:  
       path: "{{ item }}"

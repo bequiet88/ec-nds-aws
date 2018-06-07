@@ -24,6 +24,12 @@
   - name: start and enable nginx
     service:
       name: nginx
-      state: started
+      state: restarted
       enabled: yes
-
+  - name: enable cron job for nginx cert renewel
+    cron:
+      name: "nginx cert renewel"
+      miunte: "40"
+      hour: "3"
+      day: "0"
+      job: "certbot renew >> /var/log/certbot-renew.log && /etc/init.d/nginx reload > /dev/null 2>&1"

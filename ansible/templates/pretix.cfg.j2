@@ -17,7 +17,7 @@ name=postgres
 user={{ postgres_user }}
 password={{ postgres_pw }}
 ; Replace with host IP address for PostgreSQL
-host=db
+host=pretix_db_1.pretix_default
 
 [mail]
 ; See config file documentation for more options
@@ -30,8 +30,8 @@ tls=on
 ssl=off
 
 [redis]
-location=redis://redis:6379/0
+location=redis://pretix_redis_1.pretix_default:6379/0
 
 [celery]
-backend=redis://redis:6379/0
-broker=redis://redis:6379/0
+backend=redis://pretix_redis_1.pretix_default:6379/0
+broker=redis://pretix_redis_1.pretix_default:6379/0
