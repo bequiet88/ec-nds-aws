@@ -1,0 +1,4 @@
+pretix-passbook
+pretix-sepadebit
+pretix-fontpack-free
+pretix-pages

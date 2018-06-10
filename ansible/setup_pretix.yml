@@ -16,6 +16,20 @@
     with_items:
       - /home/pretix/etc/pretix
       - /var/pretix-data
+  - name: copy plugins.txt
+    copy:
+      src: ./files/plugins.txt
+      dest: /home/pretix/pretix/src/requirements/plugins.txt
+      owner: pretix
+      group: pretix
+      mode: 0644
+  - name: copy plugins.txt
+    copy:
+      src: ./files/Dockerfile
+      dest: /home/pretix/pretix/Dockerfile
+      owner: pretix
+      group: pretix
+      mode: 0644
   - name: create folder for config
     file:
       path: /var/postgres-data
