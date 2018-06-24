@@ -32,4 +32,4 @@
       miunte: "40"
       hour: "3"
       day: "0"
-      job: "certbot renew >> /var/log/certbot-renew.log && /etc/init.d/nginx reload > /dev/null 2>&1"
+      job: "/usr/bin/certbot renew >> /var/log/certbot-renew.log && /etc/init.d/nginx reload > /dev/null 2>&1"
