@@ -61,3 +61,8 @@ variable "alarm_email" {
   default     = "jochen@huelss.de"
 }
 
+variable "s3_resources" {
+  type        = "list"
+  description = "List of ARNs of allowed S3 Buckets"
+  default     = ["arn:aws:s3:::ec-nds-backups","arn:aws:s3:::ec-nds-backups/*"]
+}

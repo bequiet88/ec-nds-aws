@@ -2,6 +2,7 @@
 - hosts: all
   become: true
   tasks:
+  - include_vars: secrets.yml
   - name: install awscli
     apt:
       name: "{{ item }}"
@@ -19,8 +20,8 @@
       - /home/pretix/backups
       - /home/pretix/.aws
   - name: copy aws config
-    copy:
-      src: ./files/aws_config
+    template:
+      src: ./templates/aws_config.j2
       dest: /home/pretix/.aws/config
       owner: pretix
       group: pretix
@@ -28,14 +29,14 @@
   - name: enable cron job for backup
     cron:
       name: "cron for postgres backup"
-      miunte: "0"
+      minute: "0"
       hour: "5"
-      job: "/usr/bin/docker exec -t -u postgres pretix_db_1 pg_dumpall -c > /home/pretix/backups/pretix_dump_`date +%d`.sql"
+      job: "/usr/bin/docker exec -t -u postgres pretix_db_1 pg_dumpall -c > /home/pretix/backups/pretix_dump_`date +\\%d`.sql"
       user: "pretix"
   - name: enable cron job for s3 sync
     cron:
       name: "cron for backup s3 sync"
-      miunte: "0"
+      minute: "0"
       hour: "6"
-      job: "/usr/local/bin/aws s3 sync --no-progress /home/pretix/backups s3://ec-nds-backups/Pretix-PostgreSQL-Backups"
+      job: "/usr/bin/aws s3 sync /home/pretix/backups s3://ec-nds-backups/Pretix-PostgreSQL-Backups"
       user: "pretix"

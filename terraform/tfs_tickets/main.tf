@@ -5,7 +5,7 @@ provider "aws" {
   region     = "${var.region}"
 }
 
-### IAM ###
+### EC2 IAM Role ###
 module "ec2_iam_role" {
   source      = "Smartbrood/ec2-iam-role/aws"
   version     = "0.3.0"
@@ -20,6 +20,37 @@ module "ec2_iam_role" {
     "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   ]
+}
+
+### Create S3 IAM User ###
+data "aws_iam_policy_document" "s3_backup" {
+  statement {
+    actions   = ["s3:ListBucket","s3:ListBucketMultipartUploads","s3:ListBucketVersions","s3:ListMultipartUploadParts"]
+    resources = ["${var.s3_resources}"]
+    effect    = "Allow"
+  }
+
+  statement {
+    actions   = ["s3:PutObject","s3:GetObject","s3:DeleteObject"]
+    resources = ["${var.s3_resources}"]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_user" "s3_backup" {
+  name          = "s3_backup"
+  force_destroy = "true"
+}
+
+resource "aws_iam_access_key" "s3_backup" {
+  user    = "${aws_iam_user.s3_backup.name}"
+}
+
+
+resource "aws_iam_user_policy" "s3_backup" {
+  name   = "${aws_iam_user.s3_backup.name}"
+  user   = "${aws_iam_user.s3_backup.name}"
+  policy = "${data.aws_iam_policy_document.s3_backup.json}"
 }
 
 
