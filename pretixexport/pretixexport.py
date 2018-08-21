@@ -21,7 +21,7 @@ import dateutil
 from collections import OrderedDict
 from operator import itemgetter
 
-import pytz
+#import pytz
 import json
 import re
 import requests
