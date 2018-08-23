@@ -12,6 +12,11 @@
     copy:
       src: ./files/nginx.conf
       dest: /etc/nginx/sites-available/tickets.ec-niedersachsen.de
+  - name: copy nginx .htpasswd 
+    copy:
+      src: ./files/.htpasswd
+      dest: /etc/nginx/.htpasswd
+      mode: 0444
   - name: set symlink
     file:
       src: /etc/nginx/sites-available/tickets.ec-niedersachsen.de
@@ -29,7 +34,7 @@
   - name: enable cron job for nginx cert renewel
     cron:
       name: "nginx cert renewel"
-      miunte: "40"
+      minute: "40"
       hour: "3"
-      day: "0"
+      day: "7"
       job: "/usr/bin/certbot renew >> /var/log/certbot-renew.log && /etc/init.d/nginx reload > /dev/null 2>&1"
