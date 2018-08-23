@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Pretix Export</title>
+
+<style>
+html, body {
+    font-family: Verdana,sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 5px;
+}
+table {
+    width: 100%;
+}
+table, th, td {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding: 6px 8px;
+}
+table tr:nth-child(even) {
+    background-color: #eee;
+}
+table tr:nth-child(odd) {
+   background-color:#fff;
+}
+.ec_graphbar {
+    background:     rgb(15, 112, 183) !important;
+    height:         10px;
+    float: left;
+}
+.ec_graphbarInvert {
+    background:     rgb(112, 183, 15) !important;
+    height:         10px;
+    overflow: hidden;
+}
+.ec_graphbar_border {
+    border:         rgb(15, 112, 183) solid 1px;
+    overflow: hidden;
+}
+
+.bar-graph {
+  padding: 0;
+  width: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: flex-end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  height: 425px;
+  margin: 0;
+}
+
+.bar-graph li {
+  display: block;
+  padding: 1.5625rem 0;
+  position: relative;
+  text-align: center;
+  vertical-align: bottom;
+  border-radius: 4px 4px 0 0;
+  max-width: 20%;
+  height: 100%;
+  margin: 0 1.8% 0 0;
+  -webkit-flex: 1 1 15%;
+      -ms-flex: 1 1 15%;
+          flex: 1 1 15%;
+}
+
+.bar-graph .bar-graph-axis {
+  -webkit-flex: 1 1 8%;
+      -ms-flex: 1 1 8%;
+          flex: 1 1 8%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.bar-graph .bar-graph-label {
+  margin: 0;
+  background-color: none;
+  color: #8a8a8a;
+  position: relative;
+}
+
+@media print, screen and (min-width: 40em) {
+  .bar-graph .bar-graph-label:before, .bar-graph .bar-graph-label:after {
+    content: "";
+    position: absolute;
+    border-bottom: 1px dashed #8a8a8a;
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 20%;
+  }
+}
+
+@media print, screen and (min-width: 40em) and (min-width: 64em) {
+  .bar-graph .bar-graph-label:before, .bar-graph .bar-graph-label:after {
+    width: 30%;
+  }
+}
+
+@media print, screen and (min-width: 40em) {
+  .bar-graph .bar-graph-label:after {
+    left: auto;
+    right: 0;
+  }
+}
+
+.bar-graph .percent {
+  letter-spacing: -3px;
+  opacity: 0.4;
+  width: 100%;
+  font-size: 0.5rem;
+  position: absolute;
+}
+
+@media print, screen and (min-width: 40em) {
+  .bar-graph .percent {
+    font-size: 0.5rem;
+  }
+}
+
+.bar-graph .percent span {
+  font-size: 1.875rem;
+}
+
+.bar-graph .description {
+  font-weight: 800;
+  opacity: 0.5;
+  text-transform: uppercase;
+  width: 100%;
+  font-size: 14px;
+  bottom: 20px;
+  position: absolute;
+  font-size: 1rem;
+  overflow: hidden;
+}
+
+.bar-graph .bar.primary {
+  border: 1px solid #1779ba;
+  background: linear-gradient(#2196e3, #1779ba 70%);
+}
+
+.bar-graph .bar.secondary {
+  border: 1px solid #767676;
+  background: linear-gradient(#909090, #767676 70%);
+}
+
+.bar-graph .bar.success {
+  border: 1px solid #3adb76;
+  background: linear-gradient(#65e394, #3adb76 70%);
+}
+
+.bar-graph .bar.warning {
+  border: 1px solid #ffae00;
+  background: linear-gradient(#ffbe33, #ffae00 70%);
+}
+
+.bar-graph .bar.alert {
+  border: 1px solid #cc4b37;
+  background: linear-gradient(#d67060, #cc4b37 70%);
+}
+</style>
+</head>
+<body>
+<h1>Connect 2018</h1><h2>Statistik</h2><h3>Tickets</h3><table><tr><td>Wochenende: 214 (500)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 85.0px;"></div></div></td></tr><tr><td>Samstag: 5 (50)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 20.0px;"></div></div></td></tr><tr><td>Wochenende (Helfer): 5 (50)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 20.0px;"></div></div></td></tr><tr><td>Wochenende (Mitarbeiter): 28 (100)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 56.0px;"></div></div></td></tr><tr><td>Samstag (Mitarbeiter): 2 (50)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 8.0px;"></div></div></td></tr><tr><td>Wochenende (Free): 2 (100)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 4.0px;"></div></div></td></tr></table><h3>Seminare und Workshops</h3><table><tr><td>Mit Jesus leben in 4D (Ingo Müller, Referend für Teenagerarbeit, deutscher EC-Verband): 33 (99)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 66.0px;"></div></div></td></tr><tr><td>...und seid dafür Zeugen (Tobi Liebmann, Jugendreferent, EC Niedersachsen): 33 (100)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 66.0px;"></div></div></td></tr><tr><td>Jugger (Nick Schröder, Ehrenamtlicher, EC Niedersachsen): 22 (32)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 137.0px;"></div></div></td></tr><tr><td>Flyer gestalten - worauf kommts an? (Samuel Oesterle, Jugendreferent, EC Niedersachsen): 7 (25)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 56.0px;"></div></div></td></tr><tr><td>Gesunde Beziehungen (Arne Tielbürger,  Jugendreferent, EC Niedersachsen): 25 (25)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 200.0px;"></div></div></td></tr><tr><td>Riesenseifenblasen (Maria Clauss,  Jugendreferentin, EC Niedersachsen): 4 (25)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 32.0px;"></div></div></td></tr><tr><td>Ideen für deine Jugendarbeit: Damit sie wird, was sie schon längst ist (Patrick Senner,  Jugendreferent, EC Niedersachsen): 27 (500)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 10.0px;"></div></div></td></tr><tr><td>Hilfe, meine Eltern trennen sich (Fidi Harries, Dipl. Sozialpädagogin, Bassum): 2 (15)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 26.0px;"></div></div></td></tr><tr><td>Toolbox: Die Bibel auslegen (Malte Lal, Jugendreferent, EC Niedersachsen) (18+): 7 (40)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 35.0px;"></div></div></td></tr><tr><td>Apps für die Arbeit mit Teenagern und Jugendlichen (Jan Backhaus, BFD'ler, EC Niedersachsen): 8 (30)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 53.0px;"></div></div></td></tr><tr><td>Gottes Wort wie Popcorn weitergeben (Alisa Weichsler, Gebietsleiterin Süd Nds., Stiftung Marburger Medien): 17 (40)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 85.0px;"></div></div></td></tr><tr><td>Jugendarbeit "neu" denken (Christoph Müller, leitender Jugendreferent, EC Niedersachsen): 9 (100)</td><td width="205"><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 18.0px;"></div></div></td></tr></table><h3>Connect 2018 T-Shirt</h3><table></table><h4>T-Shirts (Frauen) Größe</h4><ul><li>XL: 2</li><li>S: 28</li><li>M: 31</li><li>L: 5</li></ul><h4>T-Shirts (Männer) Größe</h4><ul><li>S: 2</li><li>M: 25</li><li>L: 12</li><li>XL: 7</li></ul><h3>Catering</h3><ul><li>Vegetarisches Essen: 30</li><li>Glutenfreies Essen: 3</li><li>Laktosefreies Essen: 5</li></ul><h4>Geschlecht</h4><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 128.0px;"></div><div class="ec_graphbarInvert" style="width: 72.0px;"></div></div><ul><li>weiblich: 164 (64.6 %)</li><li>männlich: 90 (35.4 %)</li></ul><h4>Quartier benötigt</h4><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 191.0px;"></div><div class="ec_graphbarInvert" style="width: 9.0px;"></div></div><ul><li>Übernachtungen: 245</li></ul><div class="ec_graphbar_border" style="width: 200px;"><div class="ec_graphbar" style="width: 64.0px;"></div><div class="ec_graphbarInvert" style="width: 136.0px;"></div></div><ul><li>männlich: 79 (33.2 %)</li><li>weiblich: 159 (66.8 %)</li></ul><h4>Anreise</h4><ul><li>Mit der Bahn: 87 (34.5 %)</li><li>Mit dem eigenen Auto: 52 (20.6 %)</li><li>Mit dem Auto als Mitfahrer: 113 (44.8 %)</li></ul><h4>Alter</h4><ul><li>13: 16</li><li>14: 47</li><li>15: 46</li><li>16: 39</li><li>17: 31</li><li>18: 14</li><li>19: 11</li><li>20: 7</li><li>21: 8</li><li>22: 5</li><li>23: 4</li><li>24: 4</li><li>25: 2</li><li>26: 4</li><li>27: 1</li><li>28: 2</li><li>29: 1</li><li>31: 1</li><li>33: 2</li><li>34: 2</li><li>35: 3</li><li>36: 1</li><li>41: 1</li></ul><p>Durchschnitt: 17.1 Jahre</p><h4>EC-Mitglied</h4><ul><li>Ja: 63 (25.0 %)</li><li>Nein: 176 (69.8 %)</li><li>Ich habe Interesse an einer EC-Mitgliedschaft: 13 (5.2 %)</li></ul><h4>EC-Ort</h4><ul><li>EC Detern: 24</li><li>EC Hollen: 21</li><li>Ev. Jugend/Kirchengemeinde: 15</li><li>EC Filsum: 14</li><li>EC Daverden: 11</li><li>EC Wolfsburg: 11</li><li>Freikirche: 10</li><li>EC Hohnhorst: 10</li><li>EC Osterholz-Scharmbeck: 10</li><li>EC Verden: 10</li><li>EC Hützel: 9</li><li>Landeskirchliche Gemeinschaft: 8</li><li>EC Langenhagen: 8</li><li>EC Remels: 8</li><li>Sonstige: 7</li><li>EC Stadthagen-Nordstr.: 7</li><li>EC Aurich: 6</li><li>EC Berumerfehn: 6</li><li>EC Leer: 5</li><li>EC Müden: 4</li><li>EC Oldenburg: 4</li><li>EC Osnabrück: 4</li><li>EC Tiddische: 4</li><li>EC Völksen: 4</li><li>EC Firrel: 3</li><li>EC Gödenstorf: 3</li><li>EC Ihrhove: 3</li><li>EC Weener: 3</li><li>EC Braunschweig: 2</li><li>EC Delmenhorst: 2</li><li>EC Fintel: 2</li><li>EC Lammertsfehn: 2</li><li>EC Ohlendorf: 2</li><li>Kath. Jugend/Kirchengemeinde: 1</li><li>EC Bassum: 1</li><li>EC Burgdorf: 1</li><li>EC Bückeburg: 1</li><li>EC Großoldendorf: 1</li><li>EC Hameln: 1</li><li>EC Hannover-Plinke: 1</li><li>EC Pattensen: 1</li><li>EC Spetzerfehn: 1</li><li>EC Springe: 1</li><li>EC Visselhövede: 1</li><li>EC Winsen/Luhe: 1</li></ul><h4>Sommer Freizeit</h4><ul><li>Österreich (Benjamin Birkholz): 21</li><li>Norwegen (Evi Stroppel): 22</li><li>Niederlande (Randy Carmichael): 6</li><li>Kroatien (Tobi Liebmann): 13</li><li>0-Euro Freizeit (Reeno de Vries): 17</li><li>Spanien (Steffen de Vries): 23</li><li>Teencamp (Patrick Senner): 50</li></ul><h4>Anmeldungen pro Monat</h4><ul><li>2018-06-10: 1</li><li>2018-06-11: 1</li><li>2018-06-21: 1</li><li>2018-07-03: 1</li><li>2018-07-04: 2</li><li>2018-07-06: 1</li><li>2018-07-10: 2</li><li>2018-07-16: 1</li><li>2018-07-17: 2</li><li>2018-07-19: 1</li><li>2018-07-22: 1</li><li>2018-07-23: 5</li><li>2018-07-24: 1</li><li>2018-07-25: 1</li><li>2018-07-26: 1</li><li>2018-07-28: 1</li><li>2018-07-29: 3</li><li>2018-07-30: 3</li><li>2018-07-31: 2</li><li>2018-08-01: 3</li><li>2018-08-02: 4</li><li>2018-08-03: 1</li><li>2018-08-04: 3</li><li>2018-08-05: 9</li><li>2018-08-06: 3</li><li>2018-08-07: 2</li><li>2018-08-08: 14</li><li>2018-08-09: 6</li><li>2018-08-10: 5</li><li>2018-08-11: 5</li><li>2018-08-12: 5</li><li>2018-08-13: 4</li><li>2018-08-14: 4</li><li>2018-08-15: 5</li><li>2018-08-16: 6</li><li>2018-08-17: 3</li><li>2018-08-18: 10</li><li>2018-08-19: 18</li><li>2018-08-20: 13</li><li>2018-08-21: 28</li><li>2018-08-22: 72</li><li>2018-08-23: 2</li></ul><h4>Bezahlung</h4><ul><li>paypal: 107 (41.8 %)</li><li>sepadebit: 32 (12.5 %)</li><li>free: 2 (0.8 %)</li><li>banktransfer: 115 (44.9 %)</li></ul><h4>Status</h4><ul><li>paid: 192 (72.2 %)</li><li>canceled: 8 (3.0 %)</li><li>refunded: 2 (0.8 %)</li><li>pending: 64 (24.1 %)</li></ul>
+</body>
+</html> 

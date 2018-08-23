@@ -539,7 +539,7 @@ for event in eventData['results']:
     html.write('<h4>Alter</h4>')
     stats['stats']['age'] = OrderedDict(sorted(stats['stats']['age'].items()))
     printUl(stats['stats']['age'])
-    html.write('<p>Durchschnitt: '+ ":.1f".format(stats['stats']['ageAvg']) +' Jahre</p>')
+    html.write('<p>Durchschnitt: '+ "{:.1f}".format(stats['stats']['ageAvg']) +' Jahre</p>')
     
     html.write('<h4>EC-Mitglied</h4>')
     printUl(stats['answers'][7], strData['question'][7], withPercent=True)
