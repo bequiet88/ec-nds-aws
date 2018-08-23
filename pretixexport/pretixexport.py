@@ -215,19 +215,28 @@ table tr:nth-child(odd) {
 def dictInc(d, name):
     d[name] = d.get(name, 0) + 1
 
-def printUl(list, strDict=None):
+def printUl(list, strDict=None, withPercent=False):
     #pprint(strDict)
 
     if not list:
         html.write('<p>Keine Daten.</p>')
     else:
+        sum = 0
+        if withPercent:
+            for key, value in list.items():
+                sum += value
+            
         html.write('<ul>')
         for key, value in list.items():
             if value != 0:
                 if strDict == None:
-                    html.write('<li>' + str(key) + ': ' + str(value) + '</li>')
+                    html.write('<li>' + str(key) + ': ' + str(value))
                 else:
-                    html.write('<li>' + str(strDict[key]) + ': ' + str(value) + '</li>')
+                    html.write('<li>' + str(strDict[key]) + ': ' + str(value))
+                
+                if withPercent:
+                    html.write(' (' + "{:.1f}".format(100.0 * value / sum) + ' %)')
+                html.write('</li>')
         html.write('</ul>')
 
 def printSeminarTable(list):
@@ -516,24 +525,24 @@ for event in eventData['results']:
     
     html.write('<h4>Geschlecht</h4>')
     printBar(stats['answers'][1][1], numberOfRegistration, True)
-    printUl(stats['answers'][1], strData['question'][1])
+    printUl(stats['answers'][1], strData['question'][1], withPercent=True)
     
     html.write('<h4>Quartier benötigt</h4>')
     printBar(numberOfRegistration - stats['answers'][8], numberOfRegistration, True)
     printUl({0: numberOfRegistration - stats['answers'][8]}, {0: 'Übernachtungen'})
     printBar(stats['stats']['overnight'][u'männlich'], numberOfRegistration - stats['answers'][8], True)
-    printUl(stats['stats']['overnight'])
+    printUl(stats['stats']['overnight'], withPercent=True)
     
     html.write('<h4>Anreise</h4>')
-    printUl(stats['answers'][11], strData['question'][11])
+    printUl(stats['answers'][11], strData['question'][11], withPercent=True)
     
     html.write('<h4>Alter</h4>')
     stats['stats']['age'] = OrderedDict(sorted(stats['stats']['age'].items()))
     printUl(stats['stats']['age'])
-    html.write('<p>Durchschnitt: '+ str(stats['stats']['ageAvg']) +'</p>')
+    html.write('<p>Durchschnitt: '+ ":.1f".format(stats['stats']['ageAvg']) +' Jahre</p>')
     
     html.write('<h4>EC-Mitglied</h4>')
-    printUl(stats['answers'][7], strData['question'][7])
+    printUl(stats['answers'][7], strData['question'][7], withPercent=True)
     
     html.write('<h4>EC-Ort</h4>')
     stats['answers'][6] = OrderedDict(sorted(stats['answers'][6].items(), key=itemgetter(1), reverse=True))
@@ -549,10 +558,10 @@ for event in eventData['results']:
     ##printGraph(stats['stats']['dateRegistration'])
     
     html.write('<h4>Bezahlung</h4>')
-    printUl(stats['stats']['payment'])
+    printUl(stats['stats']['payment'], withPercent=True)
 
     html.write('<h4>Status</h4>')
-    printUl(stats['stats']['status'], {'n': 'pending', 'p': 'paid', 'e': 'expired', 'c': 'canceled', 'r': 'refunded'})
+    printUl(stats['stats']['status'], {'n': 'pending', 'p': 'paid', 'e': 'expired', 'c': 'canceled', 'r': 'refunded'}, withPercent=True)
     
 html.write("""
 </body>
