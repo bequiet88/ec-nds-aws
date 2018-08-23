@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - include_vars: secrets.yml
+  - name: install virtual env
+    pip:
+      name: ['python_dateutil', 'requests', 'urllib3', 'pprint']
+      virtualenv: /home/pretix/pretixexport
+      virtualenv_site_packages: yes
+      virtualenv_command: virtualenv
+  - name: copy pretixexport.py
+    copy:
+      src: ../pretixexport/pretixexport.py
+      dest: /home/pretix/pretixexport/pretixexport.py
+      owner: pretix
+      group: pretix
+      mode: 0644
+  - name: add api key env var
+    lineinfile:
+      path: /etc/environment
+      line: "PRETIX_API_KEY=\"{{ pretix_api_key }}\""
+  - name: create folder for export
+    file:
+      path: /home/pretix/pretixexport/export
+      state: directory
+      owner: pretix
+      group: www-data
+      mode: 0755
+  - name: enable cron job for export
+    cron:
+      name: "cron for pretix export generation"
+      minute: "10"
+      job: "cd /home/pretix/pretixexport/export && /home/pretix/pretixexport/bin/python /home/pretix/pretixexport/pretixexport.py > /dev/null"
+      user: "pretix"
