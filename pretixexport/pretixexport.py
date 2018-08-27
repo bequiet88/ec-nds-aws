@@ -3,8 +3,11 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2018, webermann.net"
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __email__ = "hauke@webermann.net"
+
+import time
+startTime = time.time()
 
 import sys
 reload(sys)
@@ -562,6 +565,8 @@ for event in eventData['results']:
 
     html.write('<h4>Status</h4>')
     printUl(stats['stats']['status'], {'n': 'pending', 'p': 'paid', 'e': 'expired', 'c': 'canceled', 'r': 'refunded'}, withPercent=True)
+    
+    html.write('<p>Version: '+ __version__ +' <br />Stand: ' + time.strftime("%d.%m.%Y %H:%M", time.localtime()) + ' <br />Dauer: ' + "{:.3f} s".format(float(time.time()) - startTime) + '</p>')
     
 html.write("""
 </body>
