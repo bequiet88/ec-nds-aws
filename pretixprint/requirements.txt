@@ -1,0 +1,8 @@
+requests
+brother_ql
+urllib3
+Pillow
+python_dateutil
+pyserial
+pyusb
+nameparser
