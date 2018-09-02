@@ -91,21 +91,10 @@ def printLabel(user, eventName, count=1):
 if __name__ == "__main__": 
     user = {
         'Alter': 34,
-        'Anreise': 'Mit dem eigenen Auto',
-        'Auch wenn ich das ganze Wochenende gebucht habe, übernachte ich nicht im Connect-Quartier.': 'True',
-        'Die Verpflegung ist im Ticket enthalten. Besondere Wünsche bitte hier angeben': '',
-        'E-Mail': 'hauke@webermann.net',
-        'EC / Gemeinde': 'EC Hannover-Plinke',
-        'EC-Mitglied?': 'Ja',
-        'Geburtsdatum': '1984-01-18',
-        'Geschlecht': 'männlich',
-        'Handynummer': '01621338388',
-        'Name': 'Hauke Webermann',
-        'Ort': 'Hannover',
-        'PLZ': '30171',
-        'Straße': 'Heidornstr. 12',
+        'Name': 'Test Tseter',
         'Tickets': 'Wochenende (Mitarbeiter)',
-        'order': '8CLLA'
+        'order': '12345',
+        'Seminare und Workshops': 'Riesenseifenblasen (Test Referent)',
     }
     
     printLabel(user, 'Test Event')
