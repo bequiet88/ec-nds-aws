@@ -333,6 +333,9 @@ for event in eventData['results']:
         'products': {},
         'answers': {},
         'stats': {
+            'count': {
+                'Samstag': 0,
+                'Sonntag': 0 },
             'status': {},
             'dateRegistration': {},
             'datePayment': {},
@@ -502,7 +505,12 @@ for event in eventData['results']:
     
     stats['stats']['ageAvg'] /= float(numberOfRegistration)
     
-    
+    for idx, value in stats['products'][1].items():
+    if 'Wochenende' in products[idx][u'name'][u'de-informal']:
+        stats['stats']['count']['Samstag'] += value
+        stats['stats']['count']['Sonntag'] += value
+    if 'Samstag' in products[idx][u'name'][u'de-informal']:
+        stats['stats']['count']['Samstag'] += value
     
     
     #pprint(stats['answers'])
@@ -516,15 +524,17 @@ for event in eventData['results']:
     for key, category in categories.items():
         html.write('<h3>'+category['name']['de-informal'] +'</h3>')
         printSeminarTable(stats['products'][key])
-        
+    
     html.write('<h4>T-Shirts (Frauen) Größe</h4>')
     printUl(stats['products'][3][40], strData['variant']);
     html.write('<h4>T-Shirts (Männer) Größe</h4>')
     printUl(stats['products'][3][9], strData['variant']);
     
+    html.write('<h3>Teilnehmer</h3>')
+    printUl(stats['stats']['count'])
+    
     html.write('<h3>Catering</h3>')
     printUl(stats['answers'][9], strData['question'][9])
-    
     
     html.write('<h4>Geschlecht</h4>')
     printBar(stats['answers'][1][1], numberOfRegistration, True)
