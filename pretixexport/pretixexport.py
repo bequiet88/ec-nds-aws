@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2018, webermann.net"
 __license__ = "MIT"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -506,11 +506,11 @@ for event in eventData['results']:
     stats['stats']['ageAvg'] /= float(numberOfRegistration)
     
     for idx, value in stats['products'][1].items():
-    if 'Wochenende' in products[idx][u'name'][u'de-informal']:
-        stats['stats']['count']['Samstag'] += value
-        stats['stats']['count']['Sonntag'] += value
-    if 'Samstag' in products[idx][u'name'][u'de-informal']:
-        stats['stats']['count']['Samstag'] += value
+        if 'Wochenende' in products[idx][u'name'][u'de-informal']:
+            stats['stats']['count']['Samstag'] += value
+            stats['stats']['count']['Sonntag'] += value
+        if 'Samstag' in products[idx][u'name'][u'de-informal']:
+            stats['stats']['count']['Samstag'] += value
     
     
     #pprint(stats['answers'])
