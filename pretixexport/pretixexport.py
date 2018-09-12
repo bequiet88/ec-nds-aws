@@ -325,7 +325,7 @@ if eventData['count'] == 0:
 print 'Found ' + str(eventData['count']) + ' events'
 
 for event in eventData['results']:
-    if event['live'] == False:
+    if not event['live']:
         continue
     
     stats = {
@@ -335,7 +335,7 @@ for event in eventData['results']:
         'stats': {
             'count': {
                 'Samstag': 0,
-                'Sonntag': 0 },
+                'Sonntag': 0},
             'status': {},
             'dateRegistration': {},
             'datePayment': {},
@@ -445,10 +445,11 @@ for event in eventData['results']:
             dictInc(stats['stats']['status'], order['status'])
             
             if (order['status'] != 'c') and (order['status'] != 'r'):
-                user = {}
-                user[u'Auch wenn ich das ganze Wochenende gebucht habe, übernachte ich nicht im Connect-Quartier.'] = 'False'
-                user[u'E-Mail'] = order['email']
-                
+                user = {
+                    u'Auch wenn ich das ganze Wochenende gebucht habe, übernachte ich nicht im Connect-Quartier.': 'False',
+                    u'E-Mail': order['email']
+                }
+
                 dt = parser.parse(order['datetime'])
                 dictInc(stats['stats']['dateRegistration'], str(dt.date()))
                 
@@ -459,18 +460,16 @@ for event in eventData['results']:
                 dictInc(stats['stats']['payment'], order['payment_provider'])
                 
                 for position in order['positions']:
-                    if position['attendee_name'] != None:
+                    if position['attendee_name'] is not None:
                         user[u'Name'] = position['attendee_name']
                     
                     user[categories[products[position['item']]['category']]['name']['de-informal']] = products[position['item']]['name']['de-informal']
                     
-                    if position['variation'] != None:
+                    if position['variation'] is not None:
                         user[categories[products[position['item']]['category']]['name']['de-informal']] += ' ' + variations[position['item']][position['variation']]['value']['de-informal']
                         dictInc(stats['products'][products[position['item']]['category']][position['item']], position['variation'])
                     else:
                         dictInc(stats['products'][products[position['item']]['category']], position['item'])
-                    
-                    
                     
                     for answers in position['answers']:
                         user[questions[answers['question']]['question']['de-informal']] = answers['answer']
