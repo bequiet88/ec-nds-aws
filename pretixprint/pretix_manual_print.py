@@ -3,19 +3,20 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2018, webermann.net"
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __email__ = "hauke@webermann.net"
 
 import logging
+import signal
+from pretix_brother_ql import printLabel
+
 logging.basicConfig(level=logging.ERROR)
 
-import signal
-from pprint import pprint
-from pretix_brother_ql import printLabel
 
 def sigint_handler(signum, frame):
     exit()
- 
+
+
 def main():
     signal.signal(signal.SIGINT, sigint_handler)    
     
@@ -36,6 +37,7 @@ def main():
         printLabel(user, 'Connect 2018', 2)
 
     exit()
+
 
 if __name__ == "__main__": 
     main()
