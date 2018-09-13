@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2018, webermann.net"
 __license__ = "MIT"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __email__ = "hauke@webermann.net"
 
 import logging
@@ -282,6 +282,10 @@ def main():
         if user == False:
             print('User not found!')
         else:
+            print("Name: " + user[u'Alter'])
+            print("Ticket: " + user['Tickets'])
+            if user[u'Alter'] < 18:
+                print("\nTeilnehmer unter 18 Jahre!\n\n")
             # Print Label
             printLabel(user, eventName, 2)
 
