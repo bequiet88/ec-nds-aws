@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
 
 __author__ = "Hauke Webermann"
-__copyright__ = "Copyright 2018, webermann.net"
+__copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -280,7 +280,7 @@ def printGraph(list):
             rangeMax = val[1]
 
     rangeMax = int(math.ceil(float(rangeMax) / 10.0) * 10.0)
-    print rangeMax
+    # print rangeMax
 
     rangeInc = rangeMax / 5
 
@@ -582,7 +582,7 @@ for event in eventData['results']:
 
 html.write("""
 </body>
-</html> 
+</html>
 """)
 
 html.close()
