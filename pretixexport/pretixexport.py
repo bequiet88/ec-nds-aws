@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -18,7 +18,10 @@ from collections import OrderedDict
 from operator import itemgetter
 
 import requests
+import json
 import math
+
+import pickle
 
 from pprint import pprint
 
@@ -30,6 +33,21 @@ sys.setdefaultencoding('utf-8')
 
 # TODO https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
 urllib3.disable_warnings()
+
+if 'PRETIX_API_KEY' in os.environ:
+    pretixApiKey = os.environ['PRETIX_API_KEY']
+else:
+    print "PRETIX_API_KEY not set!"
+    exit()
+
+enableSendToSlack = False
+
+if 'PRETIX_SLACK_WEBHOOK' in os.environ:
+    slack_webhook = os.environ["PRETIX_SLACK_WEBHOOK"]
+    enableSendToSlack = True
+else:
+    print "PRETIX_SLACK_WEBHOOK not set!"
+
 
 html = open("index.html", "w")
 html.write("""
@@ -300,18 +318,14 @@ def printGraph(list):
 
     html.write('</ul>')
 
+def sendToSlack(message):
+    slack_webhook = 'https://hooks.slack.com/services/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'
 
-if 'PRETIX_API_KEY' in os.environ:
-    pretixApiKey = os.environ['PRETIX_API_KEY']
-else:
-    print "PRETIX_API_KEY not set!"
-    exit()
+    slackHeaders = {'Content-type': 'application/json'}
+    if message:
+        slackData = {'text': message}
+        requests.post(slack_webhook, data=json.dumps(slackData), headers=slackHeaders)
 
-if 'PRETIX_STATISTIC_MAIL' in os.environ:
-    pretixStatisticMail = os.environ['PRETIX_STATISTIC_MAIL']
-else:
-    print "PRETIX_STATISTIC_MAIL not set!"
-    # exit()
 
 baseUrl = 'https://tickets.ec-niedersachsen.de/api/v1/organizers/ec-nds/'
 
@@ -606,6 +620,39 @@ for event in eventData['results']:
     printUl(stats['stats']['status'], {'n': 'pending', 'p': 'paid', 'e': 'expired', 'c': 'canceled', 'r': 'refunded'},
             withPercent=True)
 
+    """ Send info to Slack """
+    if enableSendToSlack:
+        ordersListLast = []
+        fileName = 'orders.p'
+        if os.path.exists(fileName):
+            with open(fileName, 'rb') as fp:
+                ordersListLast = pickle.load(fp)
+
+        for idx, user in stats['users'].items():
+            if not (idx in ordersListLast):
+                message = 'Neue Anmeldung *' + user['Tickets'] + '* ' + idx + "\n"
+                message += '*' + user['Name'] + '* aus ' + user['Ort'] + ' (' + user['EC / Gemeinde'] + ') '
+
+                if 'Alter' in user.keys():
+                    message += str(user['Alter']) + ' Jahre'
+
+                message += "\n"
+
+                if 'Seminare und Workshops' in user.keys():
+                    message += user['Seminare und Workshops'] + "\n"
+
+                if 'Connect 2019 T-Shirt' in user.keys():
+                    message += user['Connect 2019 T-Shirt'] + "\n"
+
+                sendToSlack(message)
+
+                ordersListLast.append(idx);
+
+        with open(fileName, 'wb') as fp:
+            pickle.dump(ordersListLast, fp)
+
+
+    """ End HTML file """
     html.write('<p>Version: ' + __version__ +
                '<br />Stand: ' + time.strftime("%d.%m.%Y %H:%M", time.localtime()) +
                '<br />Dauer: ' + "{:.3f} s".format(float(time.time()) - startTime) + '</p>')
