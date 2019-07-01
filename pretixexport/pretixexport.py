@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.3.2"
+__version__ = "0.4.0"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -307,6 +307,12 @@ else:
     print "PRETIX_API_KEY not set!"
     exit()
 
+if 'PRETIX_STATISTIC_MAIL' in os.environ:
+    pretixStatisticMail = os.environ['PRETIX_STATISTIC_MAIL']
+else:
+    print "PRETIX_STATISTIC_MAIL not set!"
+    # exit()
+
 baseUrl = 'https://tickets.ec-niedersachsen.de/api/v1/organizers/ec-nds/'
 
 headers = {
@@ -324,6 +330,7 @@ if eventData['count'] == 0:
 
 print 'Found ' + str(eventData['count']) + ' events'
 
+# event = eventData['results'][-1]
 for event in eventData['results']:
     if not event['live']:
         continue
@@ -366,8 +373,10 @@ for event in eventData['results']:
     # pprint(categoryData)
     print 'Found ' + str(categoryData['count']) + ' categories'
     categories = {}
+    categories_map = {}
     for category in categoryData['results']:
         categories[category['id']] = category
+        categories_map[category['name']['de-informal']] = category['id']
 
     """ Items or Products """
     response = requests.get(eventUrl + 'items', headers=headers, verify=False)
@@ -375,11 +384,13 @@ for event in eventData['results']:
     # pprint(productData)
     print 'Found ' + str(productData['count']) + ' products'
     products = {}
+    products_map = {}
     variations = {}
     for product in productData['results']:
-        print 'id ' + str(product['id']) + ' name ' + product['name']['de-informal']
+        print 'id ' + str(product['id']) + ' -> ' + product['name']['de-informal']
         strData['product'][product['id']] = product['name']['de-informal']
         products[product['id']] = product
+        products_map[product['name']['de-informal']] = product['id']
         if not (product['category'] in stats['products']):
             stats['products'][product['category']] = {}
 
@@ -399,14 +410,19 @@ for event in eventData['results']:
     # pprint(questionData)
     print 'Found ' + str(questionData['count']) + ' questions'
     questions = {}
+    questions_map = {}
+    options_map = {}
     for question in questionData['results']:
-        print 'id ' + str(question['id']) + ' name ' + question['question']['de-informal']
+        print 'id ' + str(question['id']) + ' -> ' + question['question']['de-informal']
         questions[question['id']] = question
+        questions_map[question['question']['de-informal']] = question['id']
+
         if not question['options']:
             stats['answers'][question['id']] = 0
         else:
             for option in question['options']:
-                print '    id ' + str(option['id']) + ' name ' + option['answer']['de-informal']
+                print '    id ' + str(option['id']) + ' -> ' + option['answer']['de-informal']
+                options_map[option['answer']['de-informal']] = option['id']
 
                 if not (question['id'] in stats['answers']):
                     stats['answers'][question['id']] = {}
@@ -507,7 +523,14 @@ for event in eventData['results']:
 
     stats['stats']['ageAvg'] /= float(numberOfRegistration)
 
-    for idx, value in stats['products'][1].items():
+    # pprint(categories_map)
+    CATEGORY_TICKETS = categories_map[u'Tickets']
+    CATEGORY_SEMINARS = categories_map[u'Seminare und Workshops']
+    CATEGORY_SHIRTS = categories_map[u'Connect 2019 T-Shirt']
+    CATEGORY_KV_SPECIAL = categories_map[u'Anreise aus dem Kreisverband']
+    CATEGORY_BECHER = categories_map[u'Connect Becher']
+
+    for idx, value in stats['products'][CATEGORY_TICKETS].items():
         if 'Wochenende' in products[idx][u'name'][u'de-informal']:
             stats['stats']['count']['Samstag'] += value
             stats['stats']['count']['Sonntag'] += value
@@ -519,34 +542,39 @@ for event in eventData['results']:
     # pprint(stats['products'])
     # pprint(strData)
 
+    # pprint(questions_map)
+    # pprint(products_map)
+
     html.write('<h2>Statistik</h2>')
     for key, category in categories.items():
         html.write('<h3>' + category['name']['de-informal'] + '</h3>')
         printSeminarTable(stats['products'][key])
 
     html.write('<h4>T-Shirts (Frauen) Größe</h4>')
-    printUl(stats['products'][3][40], strData['variant'])
+    printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Frauen']], strData['variant'])
     html.write('<h4>T-Shirts (Männer) Größe</h4>')
-    printUl(stats['products'][3][9], strData['variant'])
+    printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Männer / Unisex']], strData['variant'])
 
     html.write('<h3>Teilnehmer</h3>')
     printUl(stats['stats']['count'])
 
     html.write('<h3>Catering</h3>')
-    printUl(stats['answers'][9], strData['question'][9])
+    questionCatering = questions_map[u'Die Verpflegung ist im Ticket enthalten. Besondere Wünsche bitte hier angeben']
+    printUl(stats['answers'][questionCatering], strData['question'][questionCatering])
 
     html.write('<h4>Geschlecht</h4>')
-    printBar(stats['answers'][1][1], numberOfRegistration, True)
-    printUl(stats['answers'][1], strData['question'][1], withPercent=True)
+    printBar(stats['answers'][questions_map['Geschlecht']][options_map['weiblich']], numberOfRegistration, True)
+    printUl(stats['answers'][questions_map['Geschlecht']], strData['question'][questions_map['Geschlecht']], withPercent=True)
 
     html.write('<h4>Quartier benötigt</h4>')
-    printBar(numberOfRegistration - stats['answers'][8], numberOfRegistration, True)
-    printUl({0: numberOfRegistration - stats['answers'][8]}, {0: 'Übernachtungen'})
-    printBar(stats['stats']['overnight'][u'männlich'], numberOfRegistration - stats['answers'][8], True)
+    questionQuartier = questions_map[u'Auch wenn ich das ganze Wochenende gebucht habe, übernachte ich nicht im Connect-Quartier.']
+    printBar(numberOfRegistration - stats['answers'][questionQuartier], numberOfRegistration, True)
+    printUl({0: numberOfRegistration - stats['answers'][questionQuartier]}, {0: 'Übernachtungen'})
+    printBar(stats['stats']['overnight'][u'männlich'], numberOfRegistration - stats['answers'][questionQuartier], True)
     printUl(stats['stats']['overnight'], withPercent=True)
 
     html.write('<h4>Anreise</h4>')
-    printUl(stats['answers'][11], strData['question'][11], withPercent=True)
+    printUl(stats['answers'][questions_map['Anreise']], strData['question'][questions_map['Anreise']], withPercent=True)
 
     html.write('<h4>Alter</h4>')
     stats['stats']['age'] = OrderedDict(sorted(stats['stats']['age'].items()))
@@ -554,14 +582,16 @@ for event in eventData['results']:
     html.write('<p>Durchschnitt: ' + "{:.1f}".format(stats['stats']['ageAvg']) + ' Jahre</p>')
 
     html.write('<h4>EC-Mitglied</h4>')
-    printUl(stats['answers'][7], strData['question'][7], withPercent=True)
+    printUl(stats['answers'][questions_map['EC-Mitglied?']], strData['question'][questions_map['EC-Mitglied?']], withPercent=True)
 
     html.write('<h4>EC-Ort</h4>')
-    stats['answers'][6] = OrderedDict(sorted(stats['answers'][6].items(), key=itemgetter(1), reverse=True))
-    printUl(stats['answers'][6], strData['question'][6])
+    questionECOrt = questions_map['EC / Gemeinde']
+    stats['answers'][questionECOrt] = OrderedDict(sorted(stats['answers'][questionECOrt].items(), key=itemgetter(1), reverse=True))
+    printUl(stats['answers'][questionECOrt], strData['question'][questionECOrt])
 
     html.write('<h4>Sommer Freizeit</h4>')
-    printUl(stats['answers'][10], strData['question'][10])
+    questionFreizeit = questions_map['Ich bin in diesem Sommer auf folgender Freizeit:']
+    printUl(stats['answers'][questionFreizeit], strData['question'][questionFreizeit])
 
     html.write('<h4>Anmeldungen pro Monat</h4>')
     stats['stats']['dateRegistration'] = OrderedDict(sorted(stats['stats']['dateRegistration'].items()))
