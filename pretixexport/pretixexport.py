@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -319,8 +319,6 @@ def printGraph(list):
     html.write('</ul>')
 
 def sendToSlack(message):
-    slack_webhook = 'https://hooks.slack.com/services/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'
-
     slackHeaders = {'Content-type': 'application/json'}
     if message:
         slackData = {'text': message}
