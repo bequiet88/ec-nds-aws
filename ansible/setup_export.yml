@@ -20,6 +20,10 @@
     lineinfile:
       path: /etc/environment
       line: "PRETIX_API_KEY=\"{{ pretix_api_key }}\""
+  - name: add slack env var
+    lineinfile:
+      path: /etc/environment
+      line: "PRETIX_SLACK_WEBHOOK=\"{{ pretix_slack_webhook }}\""      
   - name: create folder for export
     file:
       path: /home/pretix/pretixexport/export
