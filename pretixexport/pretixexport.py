@@ -642,6 +642,9 @@ for event in eventData['results']:
                 if 'Connect 2019 T-Shirt' in user.keys():
                     message += user['Connect 2019 T-Shirt'] + "\n"
 
+                if 'Anreise aus dem Kreisverband' in user.keys():
+                    message += user['Anreise aus dem Kreisverband'] + "\n"
+
                 sendToSlack(message)
 
                 ordersListLast.append(idx);
