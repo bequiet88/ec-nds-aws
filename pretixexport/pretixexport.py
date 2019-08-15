@@ -458,7 +458,7 @@ for event in eventData['results']:
     orderUrl = eventUrl + 'orders'
     while True:
         response = requests.get(orderUrl, headers=headers, verify=False)
-        print "Get response " + response + " requesting " + orderUrl
+        print "Get response " + str(response) + " requesting " + orderUrl
         orderData = response.json()
         # pprint(orderData['results'][6])
         print 'Found ' + str(orderData['count']) + ' orders'
