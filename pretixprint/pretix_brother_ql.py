@@ -84,7 +84,7 @@ def printLabel(user, eventName, count=1):
 if __name__ == "__main__": 
     user = {
         'Alter': 34,
-        'Name': 'Test Tseter',
+        'Name': 'Test Tester',
         'Tickets': 'Wochenende (Mitarbeiter)',
         'order': '12345',
         'Seminare und Workshops': 'Riesenseifenblasen (Test Referent)',

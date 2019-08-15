@@ -284,8 +284,9 @@ def main():
         else:
             print("Name: " + user[u'Alter'])
             print("Ticket: " + user['Tickets'])
-            if user[u'Alter'] < 18:
-                print("\nTeilnehmer unter 18 Jahre!\n\n")
+            if 'Alter' in user:
+                if user[u'Alter'] < 18:
+                    print("\nTeilnehmerIn unter 18 Jahre!\n")
             # Print Label
             printLabel(user, eventName, 2)
 
