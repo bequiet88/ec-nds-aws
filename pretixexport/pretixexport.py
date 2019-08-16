@@ -93,137 +93,9 @@ table tr:nth-child(odd) {
     border:         rgb(15, 112, 183) solid 1px;
     overflow: hidden;
 }
-
-.bar-graph {
-  padding: 0;
-  width: 100%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: flex-end;
-      -ms-flex-align: end;
-          align-items: flex-end;
-  height: 425px;
-  margin: 0;
-}
-
-.bar-graph li {
-  display: block;
-  padding: 1.5625rem 0;
-  position: relative;
-  text-align: center;
-  vertical-align: bottom;
-  border-radius: 4px 4px 0 0;
-  max-width: 20%;
-  height: 100%;
-  margin: 0 1.8% 0 0;
-  -webkit-flex: 1 1 15%;
-      -ms-flex: 1 1 15%;
-          flex: 1 1 15%;
-}
-
-.bar-graph .bar-graph-axis {
-  -webkit-flex: 1 1 8%;
-      -ms-flex: 1 1 8%;
-          flex: 1 1 8%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
-.bar-graph .bar-graph-label {
-  margin: 0;
-  background-color: none;
-  color: #8a8a8a;
-  position: relative;
-}
-
-@media print, screen and (min-width: 40em) {
-  .bar-graph .bar-graph-label:before, .bar-graph .bar-graph-label:after {
-    content: "";
-    position: absolute;
-    border-bottom: 1px dashed #8a8a8a;
-    top: 0;
-    left: 0;
-    height: 50%;
-    width: 20%;
-  }
-}
-
-@media print, screen and (min-width: 40em) and (min-width: 64em) {
-  .bar-graph .bar-graph-label:before, .bar-graph .bar-graph-label:after {
-    width: 30%;
-  }
-}
-
-@media print, screen and (min-width: 40em) {
-  .bar-graph .bar-graph-label:after {
-    left: auto;
-    right: 0;
-  }
-}
-
-.bar-graph .percent {
-  letter-spacing: -3px;
-  opacity: 0.4;
-  width: 100%;
-  font-size: 0.5rem;
-  position: absolute;
-}
-
-@media print, screen and (min-width: 40em) {
-  .bar-graph .percent {
-    font-size: 0.5rem;
-  }
-}
-
-.bar-graph .percent span {
-  font-size: 1.875rem;
-}
-
-.bar-graph .description {
-  font-weight: 800;
-  opacity: 0.5;
-  text-transform: uppercase;
-  width: 100%;
-  font-size: 14px;
-  bottom: 20px;
-  position: absolute;
-  font-size: 1rem;
-  overflow: hidden;
-}
-
-.bar-graph .bar.primary {
-  border: 1px solid #1779ba;
-  background: linear-gradient(#2196e3, #1779ba 70%);
-}
-
-.bar-graph .bar.secondary {
-  border: 1px solid #767676;
-  background: linear-gradient(#909090, #767676 70%);
-}
-
-.bar-graph .bar.success {
-  border: 1px solid #3adb76;
-  background: linear-gradient(#65e394, #3adb76 70%);
-}
-
-.bar-graph .bar.warning {
-  border: 1px solid #ffae00;
-  background: linear-gradient(#ffbe33, #ffae00 70%);
-}
-
-.bar-graph .bar.alert {
-  border: 1px solid #cc4b37;
-  background: linear-gradient(#d67060, #cc4b37 70%);
-}
 </style>
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
 """)
@@ -291,32 +163,30 @@ def printBar(value, limit, addSecond=False):
     html.write('</div>')
 
 
-def printGraph(list):
-    rangeMax = 0
-    for val in list.items():
-        if val[1] > rangeMax:
-            rangeMax = val[1]
+def genTraceVarStr(list, type, name):
+    """var
+    trace1 = {
+        x: [1, 2, 3, 4],
+        y: [10, 15, 13, 17],
+        type: 'scatter',
+        name: 'Text'
+    };"""
+    x = ""
+    y = ""
 
-    rangeMax = int(math.ceil(float(rangeMax) / 10.0) * 10.0)
-    # print rangeMax
+    for key, val in list.items():
+        x += '"' + str(key) + '", '
+        y += str(val) + ', '
 
-    rangeInc = rangeMax / 5
+    out = "var trace" + name + " = {\n"
+    out += "x: [" + x + "],\n"
+    out += "y: [" + y + "],\n"
+    out += "type: \"" + type + "\",\n"
+    out += "name: \"" + name + "\""
+    out += "};"
 
-    html.write('<ul class="bar-graph">')
-    html.write('<li class="bar-graph-axis">')
+    return out
 
-    for i in range(rangeMax, 0 - 1, -rangeInc):
-        html.write('<div class="bar-graph-label">' + str(i) + '</div>')
-
-    html.write('</li>')
-
-    for val in list.items():
-        html.write('<li class="bar primary" style="height: ' + str(val[1] * 100 / rangeMax) + '%;" title="' +
-                   val[0] + ' ' + str(val[1]) + '">')
-        html.write('    <div class="percent">' + str(val[1]) + '</div>')
-        html.write('</li>')
-
-    html.write('</ul>')
 
 def sendToSlack(message):
     slackHeaders = {'Content-type': 'application/json'}
@@ -595,8 +465,15 @@ for event in eventData['results']:
 
     html.write('<h4>Alter</h4>')
     stats['stats']['age'] = OrderedDict(sorted(stats['stats']['age'].items()))
-    printUl(stats['stats']['age'])
+    html.write('<div id="chartAge"></div>')
     html.write('<p>Durchschnitt: ' + "{:.1f}".format(stats['stats']['ageAvg']) + ' Jahre</p>')
+
+    html.write("\n<script>")
+    html.write(genTraceVarStr(stats['stats']['age'], 'bar', 'Alter'))
+    html.write("""
+        var data = [traceAlter];
+        Plotly.newPlot('chartAge', data, {width: 700}, {showSendToCloud: false});
+    </script>""")
 
     html.write('<h4>EC-Mitglied</h4>')
     printUl(stats['answers'][questions_map['EC-Mitglied?']], strData['question'][questions_map['EC-Mitglied?']], withPercent=True)
@@ -610,11 +487,38 @@ for event in eventData['results']:
     questionFreizeit = questions_map['Ich bin in diesem Sommer auf folgender Freizeit:']
     printUl(stats['answers'][questionFreizeit], strData['question'][questionFreizeit])
 
-    html.write('<h4>Anmeldungen pro Monat</h4>')
+    html.write('<h4>Anmeldungen pro Tag</h4>')
     stats['stats']['dateRegistration'] = OrderedDict(sorted(stats['stats']['dateRegistration'].items()))
     stats['stats']['datePayment'] = OrderedDict(sorted(stats['stats']['datePayment'].items()))
-    printUl(stats['stats']['dateRegistration'])
-    # printGraph(stats['stats']['dateRegistration'])
+
+    sum = 0
+    traceReg = {}
+
+    for date, cnt in stats['stats']['dateRegistration'].items():
+        d = parser.parse(date)
+        sum += cnt
+        traceReg[d.strftime('%Y-%m-%d')] = sum
+
+    sum = 0
+    tracePaid = {}
+
+    for date, cnt in stats['stats']['datePayment'].items():
+        d = parser.parse(date)
+        sum += cnt
+        tracePaid[d.strftime('%Y-%m-%d')] = sum
+
+    traceReg = OrderedDict(sorted(traceReg.items()))
+    tracePaid = OrderedDict(sorted(tracePaid.items()))
+
+    html.write('<div id="chartRegistration"></div>')
+    html.write("\n<script>")
+    html.write(genTraceVarStr(traceReg, 'scatter', 'Anmeldungen'))
+    html.write(genTraceVarStr(tracePaid, 'scatter', 'Bezahlt'))
+
+    html.write("""
+        var data = [traceAnmeldungen, traceBezahlt];
+        Plotly.newPlot('chartRegistration', data, {width: 700}, {showSendToCloud: false, locale: 'de'});
+    </script>""")
 
     html.write('<h4>Bezahlung</h4>')
     printUl(stats['stats']['payment'], withPercent=True)
