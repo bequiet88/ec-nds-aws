@@ -457,8 +457,12 @@ for event in eventData['results']:
     numberOfRegistrationWithoutBirthday = 0
     orderUrl = eventUrl + 'orders'
     while True:
-        response = requests.get(orderUrl, headers=headers, verify=False)
-        print "Get response " + str(response) + " requesting " + orderUrl
+        for timeout in range(0, 10):
+            response = requests.get(orderUrl, headers=headers, verify=False)
+            print "Get response " + str(response) + " requesting " + orderUrl
+            if response.status_code == 200:
+                break
+
         orderData = response.json()
         # pprint(orderData['results'][6])
         print 'Found ' + str(orderData['count']) + ' orders'
