@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.5.1"
+__version__ = "0.6.0"
 __email__ = "hauke@webermann.net"
 
 import time
