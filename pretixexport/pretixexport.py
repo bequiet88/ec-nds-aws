@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -139,8 +139,7 @@ registrationHistory = {"2015": {
         "08-31": 323, "09-01": 327, "09-02": 329, "09-03": 335,
         "09-04": 343, "09-05": 348, "09-06": 352, "09-07": 357,
         "09-08": 361, "09-09": 368, "09-10": 370, "09-11": 384,
-        "09-12": 390, "09-13": 397, "09-14": 397, "09-15": 397, # Todo check data last year 
-        "09-16": 397
+        "09-12": 390, "09-13": 397, "09-14": 399, "09-15": 420
     }
 }
 
@@ -258,7 +257,7 @@ def printBar(value, limit, addSecond=False):
     html.write('</div>')
 
 
-def genTraceVarStr(list, type, name):
+def genTraceVarStr(list, type, name, show=True, line_width=2):
     """var
     trace1 = {
         x: [1, 2, 3, 4],
@@ -273,10 +272,14 @@ def genTraceVarStr(list, type, name):
         x += '"' + str(key) + '", '
         y += str(val) + ', '
 
-    out = "var trace" + name + " = {\n"
+    out = "var trace" + name.replace(" ", "_") + " = {\n"
     out += "x: [" + x + "],\n"
     out += "y: [" + y + "],\n"
     out += "type: \"" + type + "\",\n"
+    out += "hoverinfo: \"y\",\n"
+    if not show:
+        out += "visible: \"legendonly\",\n"
+    out += "line: {width:" + str(line_width) + "},\n"
     out += "name: \"" + name + "\""
     out += "};"
 
@@ -607,12 +610,24 @@ for event in eventData['results']:
 
     html.write('<div id="chartRegistration"></div>')
     html.write("\n<script>")
-    html.write(genTraceVarStr(traceReg, 'scatter', 'Anmeldungen'))
+    html.write(genTraceVarStr(traceReg, 'scatter', 'Anmeldungen', True, 4))
     html.write(genTraceVarStr(tracePaid, 'scatter', 'Bezahlt'))
 
+    eventYear = eventDate.strftime('%Y')
+    historyTraces = ""
+
+    for year, yearData in registrationHistory.items():
+        trace = {}
+        for idx, val in yearData.items():
+            trace[str(eventYear) + "-" + idx] = val
+
+        trace = OrderedDict(sorted(trace.items()))
+        html.write(genTraceVarStr(trace, 'scatter', "Anmeldung " + str(year), False))
+        historyTraces += "traceAnmeldung_" + str(year) + ", "
+
     html.write("""
-        var data = [traceAnmeldungen, traceBezahlt];
-        Plotly.newPlot('chartRegistration', data, {width: 700}, {showSendToCloud: false, locale: 'de'});
+        var data = [traceAnmeldungen, traceBezahlt, """ + historyTraces + """];
+        Plotly.newPlot('chartRegistration', data, {width: 1000}, {showSendToCloud: false, locale: 'de'});
     </script>""")
 
     html.write('<h4>Bezahlung</h4>')
