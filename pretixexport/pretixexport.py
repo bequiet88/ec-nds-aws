@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -300,7 +300,7 @@ headers = {
     'content-type': 'application/json; charset=utf-8'
 }
 
-response = requests.get(baseUrl + 'events', headers=headers, verify=False)
+response = requests.get(baseUrl + 'events/', headers=headers, verify=False)
 eventData = response.json()
 # pprint(eventData)
 
@@ -348,7 +348,7 @@ for event in eventData['results']:
     print 'Get statistics from ' + eventName + ' (' + eventSlug + ')'
 
     """ Categories """
-    response = requests.get(eventUrl + 'categories', headers=headers, verify=False)
+    response = requests.get(eventUrl + 'categories/', headers=headers, verify=False)
     categoryData = response.json()
     # pprint(categoryData)
     print 'Found ' + str(categoryData['count']) + ' categories'
@@ -359,7 +359,7 @@ for event in eventData['results']:
         categories_map[category['name']['de-informal']] = category['id']
 
     """ Items or Products """
-    response = requests.get(eventUrl + 'items', headers=headers, verify=False)
+    response = requests.get(eventUrl + 'items/', headers=headers, verify=False)
     productData = response.json()
     # pprint(productData)
     print 'Found ' + str(productData['count']) + ' products'
@@ -375,7 +375,7 @@ for event in eventData['results']:
             stats['products'][product['category']] = {}
 
         """ Variations """
-        response = requests.get(eventUrl + 'items/' + str(product['id']) + '/variations', headers=headers, verify=False)
+        response = requests.get(eventUrl + 'items/' + str(product['id']) + '/variations/', headers=headers, verify=False)
         variantData = response.json()
         # pprint(variantData)
         variations[product['id']] = {}
@@ -385,7 +385,7 @@ for event in eventData['results']:
             strData['variant'][variant['id']] = variant['value']['de-informal']
 
     """ Questions """
-    response = requests.get(eventUrl + 'questions', headers=headers, verify=False)
+    response = requests.get(eventUrl + 'questions/', headers=headers, verify=False)
     questionData = response.json()
     # pprint(questionData)
     print 'Found ' + str(questionData['count']) + ' questions'
@@ -412,7 +412,7 @@ for event in eventData['results']:
                 strData['question'][question['id']][option['id']] = option['answer']['de-informal']
 
     """ Quotas """
-    response = requests.get(eventUrl + 'quotas', headers=headers, verify=False)
+    response = requests.get(eventUrl + 'quotas/', headers=headers, verify=False)
     quotaData = response.json()
     # pprint(quotaData)
     print 'Found ' + str(quotaData['count']) + ' quotas'
@@ -423,7 +423,7 @@ for event in eventData['results']:
 
     """ Orders """
     numberOfRegistrationWithoutBirthday = 0
-    orderUrl = eventUrl + 'orders'
+    orderUrl = eventUrl + 'orders/'
     while True:
         for timeout in range(0, 10):
             response = requests.get(orderUrl, headers=headers, verify=False)
