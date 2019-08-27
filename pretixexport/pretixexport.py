@@ -648,10 +648,16 @@ for event in eventData['results']:
         for idx, user in stats['users'].items():
             if not (idx in ordersListLast):
                 message = 'Neue Anmeldung *' + user['Tickets'] + '* ' + idx + "\n"
-                message += '*' + user['Name'] + '* aus ' + user['Ort'] + ' (' + user['EC / Gemeinde'] + ') '
+                message += '*' + user['Name'] + '*'
+
+                if 'Ort' in user.keys():
+                    message += ' aus ' + user['Ort']
+
+                if 'EC / Gemeinde' in user.keys():
+                    message += ' (' + user['EC / Gemeinde'] + ')'
 
                 if 'Alter' in user.keys():
-                    message += str(user['Alter']) + ' Jahre'
+                    message += ' ' + str(user['Alter']) + ' Jahre'
 
                 message += "\n"
 
