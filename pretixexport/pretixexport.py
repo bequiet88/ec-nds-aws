@@ -205,40 +205,40 @@ def printUl(list, strDict=None, withPercent=False):
     if not list:
         html.write('<p>Keine Daten.</p>')
     else:
-        sum = 0
+        _sum = 0
         if withPercent:
-            for key, value in list.items():
-                sum += value
+            for _key, _value in list.items():
+                _sum += _value
 
         html.write('<ul>')
-        for key, value in list.items():
-            if value != 0:
+        for _key, _value in list.items():
+            if _value != 0:
                 if strDict == None:
-                    html.write('<li>' + str(key) + ': ' + str(value))
+                    html.write('<li>' + str(_key) + ': ' + str(_value))
                 else:
-                    html.write('<li>' + str(strDict[key]) + ': ' + str(value))
+                    html.write('<li>' + str(strDict[_key]) + ': ' + str(_value))
 
                 if withPercent:
-                    html.write(' (' + "{:.1f}".format(100.0 * value / sum) + ' %)')
+                    html.write(' (' + "{:.1f}".format(100.0 * _value / _sum) + ' %)')
                 html.write('</li>')
         html.write('</ul>')
 
 
 def printSeminarTable(list):
     if not list:
-        html.write('<p>Keine Daten.</p>');
+        html.write('<p>Keine Daten.</p>')
     else:
-        html.write('<table>');
+        html.write('<table>')
 
-        for key, value in list.items():
-            seminar = products[key]
+        for _key, _value in list.items():
+            seminar = products[_key]
 
-            if not isinstance(value, dict):
+            if not isinstance(_value, dict):
                 html.write('<tr>')
-                html.write('<td>' + seminar['name'][u'de-informal'] + ': ' + str(value) + ' (' + str(
+                html.write('<td>' + seminar['name'][u'de-informal'] + ': ' + str(_value) + ' (' + str(
                     quotas[seminar['id']][u'size']) + ')</td>')
                 html.write('<td width="205">')
-                printBar(value, quotas[seminar['id']][u'size'])
+                printBar(_value, quotas[seminar['id']][u'size'])
                 html.write('</td>')
                 html.write('</tr>')
             else:
@@ -465,7 +465,7 @@ for event in eventData['results']:
                         user[u'Name'] = position['attendee_name']
 
                     user[categories[products[position['item']]['category']]['name']['de-informal']] = \
-                    products[position['item']]['name']['de-informal']
+                        products[position['item']]['name']['de-informal']
 
                     if position['variation'] is not None:
                         user[categories[products[position['item']]['category']]['name']['de-informal']] += ' ' + \
@@ -552,10 +552,10 @@ for event in eventData['results']:
     printUl(stats['answers'][questions_map['Geschlecht']], strData['question'][questions_map['Geschlecht']], withPercent=True)
 
     html.write('<h4>Quartier benötigt</h4>')
-    questionQuartier = questions_map[u'Auch wenn ich das ganze Wochenende gebucht habe, übernachte ich nicht im Connect-Quartier.']
-    printBar(numberOfRegistration - stats['answers'][questionQuartier], numberOfRegistration, True)
-    printUl({0: numberOfRegistration - stats['answers'][questionQuartier]}, {0: 'Übernachtungen'})
-    printBar(stats['stats']['overnight'][u'männlich'], numberOfRegistration - stats['answers'][questionQuartier], True)
+    sumOfQuartier = stats['stats']['overnight'][u'männlich'] + stats['stats']['overnight'][u'weiblich']
+    printBar(sumOfQuartier, numberOfRegistration, True)
+    printUl({0: sumOfQuartier}, {0: 'Übernachtungen'})
+    printBar(stats['stats']['overnight'][u'männlich'], sumOfQuartier, True)
     printUl(stats['stats']['overnight'], withPercent=True)
 
     html.write('<h4>Anreise</h4>')
@@ -676,7 +676,6 @@ for event in eventData['results']:
 
         with open(fileName, 'wb') as fp:
             pickle.dump(ordersListLast, fp)
-
 
     """ End HTML file """
     html.write('<p>Version: ' + __version__ +
