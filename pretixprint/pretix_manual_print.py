@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
 
 __author__ = "Hauke Webermann"
-__copyright__ = "Copyright 2018, webermann.net"
+__copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __email__ = "hauke@webermann.net"
 
 import logging
@@ -23,7 +23,7 @@ def main():
     user = {
         'Name': '',
         'Tickets': '',
-        'order': 'C18TBM'
+        'order': 'C19TBM'
     }
     
     while True:
@@ -34,7 +34,7 @@ def main():
         user['Tickets'] = str(var)
         
         # Print Label
-        printLabel(user, 'Connect 2018', 2)
+        printLabel(user, 'Connect 2019')
 
     exit()
 
