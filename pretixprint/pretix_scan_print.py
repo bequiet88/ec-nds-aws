@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
 
 __author__ = "Hauke Webermann"
-__copyright__ = "Copyright 2018, webermann.net"
+__copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __email__ = "hauke@webermann.net"
 
 import logging
@@ -24,7 +24,7 @@ from pprint import pprint
 
 CONFIG = {
     'serial': 'COM3',
-    'eventSlug': 'connect18'
+    'eventSlug': 'connect19'
 }
 
 logging.basicConfig(level=logging.ERROR)
@@ -288,7 +288,7 @@ def main():
                 if user[u'Alter'] < 18:
                     print("\nTeilnehmerIn unter 18 Jahre!\n")
             # Print Label
-            printLabel(user, eventName, 2)
+            printLabel(user, eventName)
 
     exit()
 
