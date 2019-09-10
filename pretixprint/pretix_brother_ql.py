@@ -63,8 +63,8 @@ def printLabel(user, eventName):
         img = Image.new("RGB", imgSize, fillWhite)
         draw = ImageDraw.Draw(img)
 
-        printCenter(draw, 50, (name.first + ' ' + name.middle).strip(), f100)
-        printCenter(draw, 170, name.last, f40)
+        printCenter(draw, 50, (name.first.capitalize() + ' ' + name.middle.capitalize()).strip(), f100)
+        printCenter(draw, 170, name.last.capitalize(), f40)
 
         if i == 0:
             if mitarbeiter:
