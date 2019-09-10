@@ -8,7 +8,7 @@ __email__ = "hauke@webermann.net"
 
 import logging
 import signal
-from pretix_brother_ql import printLabel
+from pretixprint.pretix_brother_ql import printLabel
 
 logging.basicConfig(level=logging.ERROR)
 
