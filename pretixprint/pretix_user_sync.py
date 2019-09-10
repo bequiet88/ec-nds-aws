@@ -3,22 +3,17 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019, webermann.net"
 __license__ = "MIT"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __email__ = "hauke@webermann.net"
 
 import logging
 import os
 import requests
-import signal
 
 import dateutil
 from dateutil import parser
 
-import serial
-import io
 import urllib3
-
-from pretix_brother_ql import printLabel
 
 from pprint import pprint
 
@@ -46,7 +41,7 @@ questions = {}
 quotas = {}
 
 headers = {
-            'Authorization': 'Token ' + pretixApiKey,
+    'Authorization': 'Token ' + pretixApiKey,
     'content-type': 'application/json; charset=utf-8'
 }
 
@@ -233,6 +228,9 @@ def syncUserData():
 
     print("\nFound " + str(numberOfRegistration) + " User")
 
+
+def getEventName():
+    return eventName
 
 def findUser(qr):
     if not qr in stats['users']:
