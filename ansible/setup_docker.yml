@@ -22,9 +22,9 @@
       path: /usr/local/bin/docker-compose
       mode: 0755
   - name: copy docker compose file to remote
-    copy:
-      src: ./files/docker-compose.yml
+    template:
+      src: ./templates/docker-compose.yml.j2
       dest: /home/pretix/docker-compose.yml
       owner: pretix
       group: pretix
-      mode: 0644 
+      mode: 0644
