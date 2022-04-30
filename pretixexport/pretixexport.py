@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
 
 __author__ = "Hauke Webermann"
-__copyright__ = "Copyright 2019, webermann.net"
+__copyright__ = "Copyright 2019-2022, webermann.net"
 __license__ = "MIT"
-__version__ = "0.6.3"
+__version__ = "0.7.0"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -37,7 +37,7 @@ urllib3.disable_warnings()
 if 'PRETIX_API_KEY' in os.environ:
     pretixApiKey = os.environ['PRETIX_API_KEY']
 else:
-    print "PRETIX_API_KEY not set!"
+    print("PRETIX_API_KEY not set!")
     exit()
 
 enableSendToSlack = False
@@ -46,7 +46,7 @@ if 'PRETIX_SLACK_WEBHOOK' in os.environ:
     slack_webhook = os.environ["PRETIX_SLACK_WEBHOOK"]
     enableSendToSlack = True
 else:
-    print "PRETIX_SLACK_WEBHOOK not set!"
+    print("PRETIX_SLACK_WEBHOOK not set!")
 
 registrationHistory = {"2015": {
         "06-01": 18, "06-07": 18, "06-09": 19, "06-10": 19,
@@ -140,6 +140,24 @@ registrationHistory = {"2015": {
         "09-04": 343, "09-05": 348, "09-06": 352, "09-07": 357,
         "09-08": 361, "09-09": 368, "09-10": 370, "09-11": 384,
         "09-12": 390, "09-13": 397, "09-14": 399, "09-15": 420
+    },
+    "2019": {
+        "06-28": 9, "06-29": 15, "06-30": 18, "07-01": 22,
+        "07-03": 23, "07-04": 24, "07-05": 25, "07-06": 28,
+        "07-09": 29, "07-14": 31, "07-15": 32, "07-16": 33,
+        "07-17": 42, "07-18": 44, "07-19": 46, "07-20": 47,
+        "07-21": 48, "07-22": 52, "07-23": 56, "07-25": 57,
+        "07-26": 59, "07-27": 61, "07-28": 62, "07-29": 64,
+        "07-30": 65, "08-01": 69, "08-05": 71, "08-06": 73,
+        "08-08": 74, "08-09": 83, "08-10": 85, "08-11": 89,
+        "08-12": 95, "08-13": 101, "08-14": 107, "08-15": 119,
+        "08-16": 133, "08-17": 158, "08-18": 203, "08-19": 208,
+        "08-20": 221, "08-21": 253, "08-22": 254, "08-23": 259,
+        "08-24": 262, "08-26": 264, "08-27": 273, "08-28": 275,
+        "08-29": 278, "08-31": 283, "09-01": 289, "09-02": 297,
+        "09-03": 301, "09-04": 305, "09-05": 309, "09-06": 312,
+        "09-07": 317, "09-08": 325, "09-09": 337, "09-10": 345,
+        "09-11": 361, "09-12": 367, "09-13": 375, "09-14": 387
     }
 }
 
@@ -249,7 +267,9 @@ def printSeminarTable(list):
 
 def printBar(value, limit, addSecond=False):
     barSize = 200
-    barWidth = math.floor(200 * value / limit)
+    barWidth = 0
+    if limit != 0:
+        barWidth = math.floor(200 * value / limit)
     html.write('<div class="ec_graphbar_border" style="width: ' + str(barSize) + 'px;">')
     html.write('<div class="ec_graphbar" style="width: ' + str(barWidth) + 'px;"></div>')
     if addSecond:
@@ -305,14 +325,17 @@ eventData = response.json()
 # pprint(eventData)
 
 if eventData['count'] == 0:
-    print 'No events.'
+    print('No events.')
     exit()
 
-print 'Found ' + str(eventData['count']) + ' events'
+print('Found ' + str(eventData['count']) + ' events')
 
 # event = eventData['results'][-1]
 for event in eventData['results']:
     if not event['live']:
+        continue
+    print(event['slug'])
+    if 'connect' not in event['slug']:
         continue
 
     stats = {
@@ -329,7 +352,9 @@ for event in eventData['results']:
             'payment': {},
             'age': {},
             'ageAvg': 0,
-            'overnight': {},
+            'overnight': {
+                u'männlich': 0,
+                u'weiblich': 0},
         }
     }
     strData = {
@@ -345,13 +370,13 @@ for event in eventData['results']:
     # pprint(event)
 
     html.write('<h1>' + eventName + '</h1>')
-    print 'Get statistics from ' + eventName + ' (' + eventSlug + ')'
+    print('Get statistics from ' + eventName + ' (' + eventSlug + ')')
 
     """ Categories """
     response = requests.get(eventUrl + 'categories/', headers=headers, verify=False)
     categoryData = response.json()
     # pprint(categoryData)
-    print 'Found ' + str(categoryData['count']) + ' categories'
+    print('Found ' + str(categoryData['count']) + ' categories')
     categories = {}
     categories_map = {}
     for category in categoryData['results']:
@@ -362,12 +387,12 @@ for event in eventData['results']:
     response = requests.get(eventUrl + 'items/', headers=headers, verify=False)
     productData = response.json()
     # pprint(productData)
-    print 'Found ' + str(productData['count']) + ' products'
+    print('Found ' + str(productData['count']) + ' products')
     products = {}
     products_map = {}
     variations = {}
     for product in productData['results']:
-        print 'id ' + str(product['id']) + ' -> ' + product['name']['de-informal']
+        print('id ' + str(product['id']) + ' -> ' + product['name']['de-informal'])
         strData['product'][product['id']] = product['name']['de-informal']
         products[product['id']] = product
         products_map[product['name']['de-informal']] = product['id']
@@ -388,12 +413,12 @@ for event in eventData['results']:
     response = requests.get(eventUrl + 'questions/', headers=headers, verify=False)
     questionData = response.json()
     # pprint(questionData)
-    print 'Found ' + str(questionData['count']) + ' questions'
+    print('Found ' + str(questionData['count']) + ' questions')
     questions = {}
     questions_map = {}
     options_map = {}
     for question in questionData['results']:
-        print 'id ' + str(question['id']) + ' -> ' + question['question']['de-informal']
+        print('id ' + str(question['id']) + ' -> ' + question['question']['de-informal'])
         questions[question['id']] = question
         questions_map[question['question']['de-informal']] = question['id']
 
@@ -401,7 +426,7 @@ for event in eventData['results']:
             stats['answers'][question['id']] = 0
         else:
             for option in question['options']:
-                print '    id ' + str(option['id']) + ' -> ' + option['answer']['de-informal']
+                print('    id ' + str(option['id']) + ' -> ' + option['answer']['de-informal'])
                 options_map[option['answer']['de-informal']] = option['id']
 
                 if not (question['id'] in stats['answers']):
@@ -415,7 +440,7 @@ for event in eventData['results']:
     response = requests.get(eventUrl + 'quotas/', headers=headers, verify=False)
     quotaData = response.json()
     # pprint(quotaData)
-    print 'Found ' + str(quotaData['count']) + ' quotas'
+    print('Found ' + str(quotaData['count']) + ' quotas')
     quotas = {}
     for quota in quotaData['results']:
         for productId in quota['items']:
@@ -427,13 +452,13 @@ for event in eventData['results']:
     while True:
         for timeout in range(0, 10):
             response = requests.get(orderUrl, headers=headers, verify=False)
-            print "Get response " + str(response) + " requesting " + orderUrl
+            print("Get response " + str(response) + " requesting " + orderUrl)
             if response.status_code == 200:
                 break
 
         orderData = response.json()
         # pprint(orderData['results'][6])
-        print 'Found ' + str(orderData['count']) + ' orders'
+        print('Found ' + str(orderData['count']) + ' orders')
 
         # Order Status
         # n – pending
@@ -505,15 +530,15 @@ for event in eventData['results']:
             break
 
     numberOfRegistration = len(stats['users'])
-
-    stats['stats']['ageAvg'] /= float(numberOfRegistration)
+    if numberOfRegistration != 0:
+        stats['stats']['ageAvg'] /= float(numberOfRegistration)
 
     # pprint(categories_map)
     CATEGORY_TICKETS = categories_map[u'Tickets']
     CATEGORY_SEMINARS = categories_map[u'Seminare und Workshops']
-    CATEGORY_SHIRTS = categories_map[u'Connect 2019 T-Shirt']
+    #CATEGORY_SHIRTS = categories_map[u'Connect 2019 T-Shirt']
     CATEGORY_KV_SPECIAL = categories_map[u'Anreise aus dem Kreisverband']
-    CATEGORY_BECHER = categories_map[u'Connect Becher']
+    #CATEGORY_BECHER = categories_map[u'Connect Becher']
 
     for idx, value in stats['products'][CATEGORY_TICKETS].items():
         if 'Wochenende' in products[idx][u'name'][u'de-informal']:
@@ -535,10 +560,10 @@ for event in eventData['results']:
         html.write('<h3>' + category['name']['de-informal'] + '</h3>')
         printSeminarTable(stats['products'][key])
 
-    html.write('<h4>T-Shirts (Frauen) Größe</h4>')
-    printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Frauen']], strData['variant'])
-    html.write('<h4>T-Shirts (Männer) Größe</h4>')
-    printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Männer / Unisex']], strData['variant'])
+    #html.write('<h4>T-Shirts (Frauen) Größe</h4>')
+    #printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Frauen']], strData['variant'])
+    #html.write('<h4>T-Shirts (Männer) Größe</h4>')
+    #printUl(stats['products'][CATEGORY_SHIRTS][products_map[u'T-Shirt Männer / Unisex']], strData['variant'])
 
     html.write('<h3>Teilnehmer</h3>')
     printUl(stats['stats']['count'])
