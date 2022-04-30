@@ -28,9 +28,6 @@ from pprint import pprint
 
 startTime = time.time()
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 # TODO https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
 urllib3.disable_warnings()
 
@@ -479,7 +476,7 @@ for event in eventData['results']:
                 dt = parser.parse(order['datetime'])
                 dictInc(stats['stats']['dateRegistration'], str(dt.date()))
 
-                if isinstance(order[u'payment_date'], basestring):
+                if isinstance(order[u'payment_date'], str):
                     dt = parser.parse(order[u'payment_date'])
                     dictInc(stats['stats']['datePayment'], str(dt.date()))
 
