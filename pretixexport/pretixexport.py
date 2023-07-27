@@ -3,7 +3,7 @@
 __author__ = "Hauke Webermann"
 __copyright__ = "Copyright 2019-2023, webermann.net"
 __license__ = "MIT"
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 __email__ = "hauke@webermann.net"
 
 import time
@@ -552,7 +552,7 @@ for event in eventData['results']:
 
     # pprint(categories_map)
     CATEGORY_TICKETS = categories_map[u'Tickets']
-    CATEGORY_SEMINARS = categories_map[u'Seminare und Workshops']
+    CATEGORY_SEMINARS = categories_map[u'Seminare']
     #CATEGORY_SHIRTS = categories_map[u'Connect 2019 T-Shirt']
     CATEGORY_KV_SPECIAL = categories_map[u'Anreise aus dem Kreisverband']
     #CATEGORY_BECHER = categories_map[u'Connect Becher']
@@ -703,11 +703,8 @@ for event in eventData['results']:
 
                 message += "\n"
 
-                if 'Seminare und Workshops' in user.keys():
-                    message += user['Seminare und Workshops'] + "\n"
-
-                if 'Connect 2019 T-Shirt' in user.keys():
-                    message += user['Connect 2019 T-Shirt'] + "\n"
+                if 'Seminare' in user.keys():
+                    message += user['Seminare'] + "\n"
 
                 if 'Anreise aus dem Kreisverband' in user.keys():
                     message += user['Anreise aus dem Kreisverband'] + "\n"
