@@ -35,5 +35,5 @@
     cron:
       name: "cron for pretix export generation"
       minute: "10"
-      job: "cd /home/pretix/pretixexport/export && /home/pretix/pretixexport/bin/python /home/pretix/pretixexport/pretixexport.py > /dev/null"
+      job: "cd /home/pretix/pretixexport/export && /usr/bin/python3 /home/pretix/pretixexport/pretixexport.py > /dev/null"
       user: "pretix"
